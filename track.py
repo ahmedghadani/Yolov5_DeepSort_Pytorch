@@ -18,7 +18,8 @@ from pathlib import Path
 import cv2
 import torch
 import torch.backends.cudnn as cudnn
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 def compute_color_for_id(label):
     """
@@ -119,7 +120,7 @@ def detect(opt):
 
             s += '%gx%g ' % img.shape[2:]  # print string
             save_path = str(Path(out) / Path(p).name)
-
+            
             if det is not None and len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(
@@ -151,6 +152,14 @@ def detect(opt):
                         color = compute_color_for_id(id)
                         plot_one_box(bboxes, im0, label=label, color=color, line_thickness=2)
 
+                        H, W, _ = im0.shape
+
+                        box = output[0:4] * np.array([W, H, W, H])
+                        (center_x, center_y, width, height) = box.astype("int")
+
+                        x = int (center_x - (width / 2))
+                        y = int(center_y - (height / 2))
+
                         if save_txt:
                             # to MOT format
                             bbox_top = output[0]
@@ -161,11 +170,17 @@ def detect(opt):
                             with open(txt_path, 'a') as f:
                                f.write(('%g ' * 10 + '\n') % (frame_idx, id, bbox_top,
                                                            bbox_left, bbox_w, bbox_h, -1, -1, -1, -1))  # label format
+
                         new_detection_id = id
+
                 if new_detection_id != old_detection_id:
                     old_detection_id = new_detection_id
                     print("new detection") 
                     print(old_detection_id)
+                    crop = im0[y:y+height, x:x+width]
+
+                    cv2.imwrite("results/croppedImage.png",crop)
+
 
             else:
                 deepsort.increment_ages()
