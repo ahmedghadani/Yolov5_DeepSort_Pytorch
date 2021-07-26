@@ -153,13 +153,7 @@ def detect(opt):
                         plot_one_box(bboxes, im0, label=label, color=color, line_thickness=2)
 
                         H, W, _ = im0.shape
-
-                        box = output[0:4] * np.array([W, H, W, H])
-                        (center_x, center_y, width, height) = box.astype("int")
-
-                        x = int (center_x - (width / 2))
-                        y = int(center_y - (height / 2))
-
+                        print(output[0], output[1], output[2], output[3])
                         if save_txt:
                             # to MOT format
                             bbox_top = output[0]
@@ -177,7 +171,7 @@ def detect(opt):
                     old_detection_id = new_detection_id
                     print("new detection") 
                     print(old_detection_id)
-                    crop = im0[y:y+height, x:x+width]
+                    crop = im0[output[1]:output[3], output[0]:output[2]]
 
                     cv2.imwrite("results/croppedImage.png",crop)
 
