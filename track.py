@@ -1,4 +1,6 @@
 import sys
+
+from requests.models import Response
 sys.path.insert(0, './yolov5')
 
 from yolov5.utils.google_utils import attempt_download
@@ -9,6 +11,7 @@ from yolov5.utils.torch_utils import select_device, time_synchronized
 from yolov5.utils.plots import plot_one_box
 from deep_sort_pytorch.utils.parser import get_config
 from deep_sort_pytorch.deep_sort import DeepSort
+from pprint import pprint
 import argparse
 import os
 import platform
@@ -20,6 +23,10 @@ import torch
 import torch.backends.cudnn as cudnn
 import numpy as np
 import matplotlib.pyplot as plt
+import requests
+import json
+
+regions = ['gb', 'ae']
 
 def compute_color_for_id(label):
     """
@@ -174,7 +181,13 @@ def detect(opt):
                     crop = im0[output[1]:output[3], output[0]:output[2]]
 
                     cv2.imwrite("results/cropped_image_{}.png".format(id),crop)
-
+                    with open('/home/ahmed/Downloads/MicrosoftTeams-image.png', 'rb') as fp:
+                        response = requests.post(
+                            'https://api.platerecognizer.com/v1/plate-reader',
+                            data=dict(regions=regions),
+                            files=dict(upload=fp),
+                            headers={'Authorization': 'Token 2e49621121067187181f0a5b614c07b2be0a0d96'})
+                    pprint(response.json())
 
             else:
                 deepsort.increment_ages()
