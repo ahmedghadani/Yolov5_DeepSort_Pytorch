@@ -181,7 +181,7 @@ def detect(opt):
                     crop = im0[output[1]:output[3], output[0]:output[2]]
 
                     cv2.imwrite("results/cropped_image_{}.png".format(id),crop)
-                    with open('/home/ahmed/Downloads/MicrosoftTeams-image.png', 'rb') as fp:
+                    with open("results/cropped_image_{}.png".format(id), 'rb') as fp:
                         response = requests.post(
                             'https://api.platerecognizer.com/v1/plate-reader',
                             data=dict(regions=regions),
