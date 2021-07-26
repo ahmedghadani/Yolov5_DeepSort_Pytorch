@@ -173,7 +173,7 @@ def detect(opt):
                     print(old_detection_id)
                     crop = im0[output[1]:output[3], output[0]:output[2]]
 
-                    cv2.imwrite("results/croppedImage.png",crop)
+                    cv2.imwrite("results/cropped_image_{}.png".format(id),crop)
 
 
             else:
