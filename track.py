@@ -92,6 +92,8 @@ def detect(opt):
     txt_file_name = source.split('/')[-1].split('.')[0]
     txt_path = str(Path(out)) + '/' + txt_file_name + '.txt'
 
+    old_detection_id = 1
+
     for frame_idx, (path, img, im0s, vid_cap) in enumerate(dataset):
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
@@ -134,7 +136,8 @@ def detect(opt):
 
                 # pass detections to deepsort
                 outputs = deepsort.update(xywhs.cpu(), confs.cpu(), clss, im0)
-                
+                new_detection_id = 1
+
                 # draw boxes for visualization
                 if len(outputs) > 0:
                     for j, (output, conf) in enumerate(zip(outputs, confs)): 
@@ -158,6 +161,11 @@ def detect(opt):
                             with open(txt_path, 'a') as f:
                                f.write(('%g ' * 10 + '\n') % (frame_idx, id, bbox_top,
                                                            bbox_left, bbox_w, bbox_h, -1, -1, -1, -1))  # label format
+                        new_detection_id = id
+                if new_detection_id != old_detection_id:
+                    old_detection_id = new_detection_id
+                    print("new detection") 
+                    print(old_detection_id)
 
             else:
                 deepsort.increment_ages()
