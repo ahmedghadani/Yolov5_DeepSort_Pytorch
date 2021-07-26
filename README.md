@@ -100,6 +100,12 @@ Can be saved to `inference/output` by
 python3 track.py --source ... --save-txt
 ```
 
+## Quick run for Detecting Cars and then recognize license plates
+
+```bash
+python3 track.py --source "media.m4v" --classes 2 --show-vid
+```
+
 
 ## Cite
 
